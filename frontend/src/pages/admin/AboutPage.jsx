@@ -22,9 +22,10 @@ const EMPTY_FORM = {
 
 const AboutPage = () => {
   const { form, setForm, isLoading, isSaving, loadError, formErrors, save } = useSingletonForm(
-    { getOne: getAbout, update: updateAbout },
-    { resourceLabel: "About", emptyForm: EMPTY_FORM }
-  );
+  getAbout,
+  updateAbout,
+  { resourceLabel: "About", emptyForm: EMPTY_FORM }
+);
 
   const handleChange = (field) => (event) => {
     setForm((prev) => ({ ...prev, [field]: event.target.value }));

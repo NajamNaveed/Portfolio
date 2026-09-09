@@ -20,9 +20,10 @@ const emptyNavItem = () => ({ label: "", href: "", order: 0, isVisible: true });
 
 const HeaderPage = () => {
   const { form, setForm, isLoading, isSaving, loadError, formErrors, save } = useSingletonForm(
-    { getOne: getHeader, update: updateHeader },
-    { resourceLabel: "Header", emptyForm: EMPTY_FORM }
-  );
+  getHeader,
+  updateHeader,
+  { resourceLabel: "Header", emptyForm: EMPTY_FORM }
+);
 
   const updateNavItem = (index, key, value) => {
     setForm((prev) => {

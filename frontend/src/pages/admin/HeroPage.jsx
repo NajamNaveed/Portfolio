@@ -21,9 +21,10 @@ const EMPTY_FORM = {
 
 const HeroPage = () => {
   const { form, setForm, isLoading, isSaving, loadError, formErrors, save } = useSingletonForm(
-    { getOne: getHero, update: updateHero },
-    { resourceLabel: "Hero", emptyForm: EMPTY_FORM }
-  );
+  getHero,
+  updateHero,
+  { resourceLabel: "Hero", emptyForm: EMPTY_FORM }
+);
 
   const handleChange = (field) => (event) => {
     setForm((prev) => ({ ...prev, [field]: event.target.value }));

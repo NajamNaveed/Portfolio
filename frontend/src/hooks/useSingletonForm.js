@@ -7,7 +7,7 @@ import { useToast } from "../context/ToastContext.jsx";
  * default shape and the singleton service (getOne/update); this hook owns
  * loading, saving, and validation-error/toast plumbing.
  */
-const useSingletonForm = (service, { resourceLabel, emptyForm }) => {
+const useSingletonForm = (getOne, update, { resourceLabel, emptyForm }) => {
   const { showToast } = useToast();
   const [form, setForm] = useState(emptyForm);
   const [isLoading, setIsLoading] = useState(true);
@@ -20,7 +20,7 @@ const useSingletonForm = (service, { resourceLabel, emptyForm }) => {
     setLoadError("");
 
     try {
-      const data = await service.getOne();
+      const data = await getOne();
       setForm({ ...emptyForm, ...data });
     } catch (error) {
       setLoadError(`Unable to load ${resourceLabel.toLowerCase()}. Please try again.`);
@@ -28,7 +28,7 @@ const useSingletonForm = (service, { resourceLabel, emptyForm }) => {
       setIsLoading(false);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [service, resourceLabel]);
+  }, [getOne, resourceLabel]);
 
   useEffect(() => {
     load();
@@ -39,7 +39,7 @@ const useSingletonForm = (service, { resourceLabel, emptyForm }) => {
     setFormErrors([]);
 
     try {
-      const updated = await service.update(payload);
+      const updated = await update(payload);
       setForm({ ...emptyForm, ...updated });
       showToast(`${resourceLabel} saved successfully.`, "success");
       return true;

@@ -25,9 +25,10 @@ const emptyLink = () => ({ label: "", href: "", order: 0 });
 
 const FooterPage = () => {
   const { form, setForm, isLoading, isSaving, loadError, formErrors, save } = useSingletonForm(
-    { getOne: getFooter, update: updateFooter },
-    { resourceLabel: "Footer", emptyForm: EMPTY_FORM }
-  );
+  getFooter,
+  updateFooter,
+  { resourceLabel: "Footer", emptyForm: EMPTY_FORM }
+);
 
   const [availableSocialLinks, setAvailableSocialLinks] = useState([]);
 
