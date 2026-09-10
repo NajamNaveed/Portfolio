@@ -1,4 +1,5 @@
 import asyncHandler from "../utils/asyncHandler.js";
+import ApiError from "../utils/ApiError.js";
 import projectService from "../services/projectService.js";
 
 export const listProjects = asyncHandler(async (req, res) => {
@@ -52,5 +53,19 @@ export const listProjectsPublic = asyncHandler(async (req, res) => {
     success: true,
     message: "Projects fetched successfully.",
     data: items,
+  });
+});
+
+export const getProjectPublic = asyncHandler(async (req, res) => {
+  const project = await projectService.getPublicOne({ slug: req.params.slug });
+
+  if (!project) {
+    throw new ApiError(404, "Project not found.");
+  }
+
+  res.status(200).json({
+    success: true,
+    message: "Project fetched successfully.",
+    data: project,
   });
 });

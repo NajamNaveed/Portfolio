@@ -53,4 +53,31 @@ export const fetchPortfolioData = async () => {
   return { data, errors };
 };
 
-export default { fetchPortfolioData };
+/**
+ * Fetches a single project by slug for the public project detail page
+ * (Phase 7). Hits the unauthenticated /public/projects/:slug route,
+ * which 404s for hidden or nonexistent projects - never the admin
+ * /projects/:id endpoint, which requires a session.
+ */
+export const fetchProjectBySlug = async (slug) => {
+  const response = await api.get(`${PUBLIC_BASE}/projects/${encodeURIComponent(slug)}`);
+  return response.data.data;
+};
+
+/**
+ * Standalone public projects list fetch, used by the project detail
+ * page for "Related Projects". Deliberately not routed through
+ * fetchPortfolioData, which would pull all 11 homepage resources just
+ * to get one of them.
+ */
+export const fetchPublicProjects = () => fetchOne(RESOURCES.projects);
+
+/**
+ * Standalone Site Settings fetch. The project detail page needs this
+ * for its <title> suffix and the global favicon (via useDocumentHead) -
+ * it deliberately doesn't re-fetch all 11 homepage resources just for
+ * that, and it doesn't reimplement the favicon logic from Phase 6.
+ */
+export const fetchPublicSiteSettings = () => fetchOne(RESOURCES.siteSettings);
+
+export default { fetchPortfolioData, fetchProjectBySlug, fetchPublicProjects, fetchPublicSiteSettings };

@@ -12,6 +12,7 @@ import CrudToolbar from "../../components/admin/CrudToolbar.jsx";
 import Pagination from "../../components/admin/Pagination.jsx";
 import ConfirmDialog from "../../components/admin/ConfirmDialog.jsx";
 import FormActions from "../../components/admin/FormActions.jsx";
+import ImageListEditor from "../../components/admin/ImageListEditor.jsx";
 import useCollectionCrud from "../../hooks/useCollectionCrud.js";
 import projectService from "../../services/cms/projectService.js";
 
@@ -21,7 +22,7 @@ const EMPTY_PROJECT = {
   shortDescription: "",
   description: "",
   coverImage: "",
-  images: "",
+  images: [],
   technologies: "",
   githubUrl: "",
   liveUrl: "",
@@ -59,7 +60,7 @@ const ProjectsPage = () => {
       setForm({
         ...EMPTY_PROJECT,
         ...editingItem,
-        images: (editingItem.images || []).join(", "),
+        images: editingItem.images || [],
         technologies: (editingItem.technologies || []).join(", "),
       });
     } else {
@@ -76,7 +77,7 @@ const ProjectsPage = () => {
     event.preventDefault();
     const payload = {
       ...form,
-      images: form.images.split(",").map((url) => url.trim()).filter(Boolean),
+      images: (form.images || []).map((url) => url.trim()).filter(Boolean),
       technologies: form.technologies.split(",").map((tech) => tech.trim()).filter(Boolean),
     };
     if (!payload.slug) delete payload.slug;
@@ -150,7 +151,12 @@ const ProjectsPage = () => {
           <Input label="Short Description" value={form.shortDescription} onChange={handleChange("shortDescription")} disabled={isSaving} required maxLength={300} />
           <Textarea label="Description" value={form.description} onChange={handleChange("description")} disabled={isSaving} required rows={4} />
           <Input label="Cover Image URL" value={form.coverImage} onChange={handleChange("coverImage")} disabled={isSaving} placeholder="https://..." />
-          <Input label="Image URLs (comma-separated)" value={form.images} onChange={handleChange("images")} disabled={isSaving} placeholder="https://... , https://..." />
+          <ImageListEditor
+            label="Gallery Images"
+            images={form.images}
+            onChange={(images) => setForm((prev) => ({ ...prev, images }))}
+            disabled={isSaving}
+          />
           <Input label="Technologies (comma-separated)" value={form.technologies} onChange={handleChange("technologies")} disabled={isSaving} placeholder="React, Node.js" />
           <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
             <Input label="GitHub URL" value={form.githubUrl} onChange={handleChange("githubUrl")} disabled={isSaving} placeholder="https://github.com/..." />

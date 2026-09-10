@@ -86,7 +86,15 @@ const createCrudService = (Model, allowedFields, options = {}) => {
     return cursor;
   };
 
-  return { list, getById, create, update, remove, listPublic };
+  // Public, read-only single-document accessor (e.g. a project detail
+  // page fetching by slug). Returns null - never throws - when nothing
+  // matches or the match isn't isVisible, so callers can turn that into
+  // a plain 404 without leaking whether a hidden document exists.
+  const getPublicOne = async (extraFilter = {}) => {
+    return Model.findOne({ isVisible: true, ...extraFilter });
+  };
+
+  return { list, getById, create, update, remove, listPublic, getPublicOne };
 };
 
 export default createCrudService;

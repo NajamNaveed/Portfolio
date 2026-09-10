@@ -1,3 +1,5 @@
+import { useEffect } from "react";
+import { useLocation } from "react-router-dom";
 import { WifiOff } from "lucide-react";
 import usePublicPortfolioData from "../../hooks/usePublicPortfolioData.js";
 import useDocumentHead from "../../hooks/useDocumentHead.js";
@@ -30,12 +32,25 @@ const HomeSkeleton = () => (
 
 const Home = () => {
   const { data, isLoading, isFullyDown, reload } = usePublicPortfolioData();
+  const location = useLocation();
 
   useDocumentHead({
     title: data?.siteSettings?.defaultSeoTitle || data?.siteSettings?.siteTitle || data?.siteSettings?.siteName,
     description: data?.siteSettings?.defaultSeoDescription || data?.siteSettings?.siteDescription,
     favicon: data?.siteSettings?.favicon,
   });
+
+  // Sections render asynchronously once portfolio data arrives, so a
+  // target like #projects (from the header nav, "Back to Projects" on a
+  // project detail page, or a direct link) won't exist yet at the moment
+  // the browser would normally try to scroll to it. Scroll manually once
+  // loading finishes and the DOM actually has the anchor.
+  useEffect(() => {
+    if (isLoading || !location.hash) return;
+    const id = location.hash.slice(1);
+    const target = document.getElementById(id);
+    target?.scrollIntoView({ behavior: "smooth", block: "start" });
+  }, [isLoading, location.hash]);
 
   if (isLoading) {
     return (

@@ -25,7 +25,7 @@ The application contains:
 * Loading and error states
 * CRUD operations for portfolio resources
 
-The project is being developed incrementally in phases. The current codebase includes the Admin Dashboard Foundation, Phase 4B CMS CRUD functionality, the Phase 5 CMS-driven public portfolio, and Phase 6 production-hardening fixes (Site Settings → public sync, request-loop audit, security review).
+The project is being developed incrementally in phases. The current codebase includes the Admin Dashboard Foundation, Phase 4B CMS CRUD functionality, the Phase 5 CMS-driven public portfolio, Phase 6 production-hardening fixes (Site Settings → public sync, request-loop audit, security review), and Phase 7's public project detail pages with image galleries.
 
 ---
 
@@ -172,6 +172,9 @@ The application currently contains the following main routes:
 /
 └── Public Portfolio
 
+/projects/:slug
+└── Public Project Detail (gallery, tech stack, links, related projects)
+
 /admin/login
 └── Admin Login
 
@@ -234,6 +237,17 @@ PUT     /resource
 
 The exact API contract should always be verified against the current backend implementation.
 
+## Project detail pages (Phase 7)
+
+Each project's `images[]` field (previously unused - see Phase 6 notes) now powers a gallery on its public detail page at `/projects/:slug`:
+
+* `coverImage` and `images[]` are merged and de-duplicated into a single gallery.
+* Clicking any gallery image opens a lightbox (`components/public/ImageLightbox.jsx`) - Escape or clicking outside closes it, and with more than one image, arrow keys/buttons navigate.
+* `githubUrl`/`liveUrl` render as buttons only when present.
+* A "More Projects" section shows up to 3 other visible projects, excluding the current one.
+* Both `coverImage` and every entry in `images[]` are now validated as real URLs by the backend (`projectValidator.js`), reusing the existing `isValidUrl` utility.
+* In the admin Projects form, the gallery is managed with `components/admin/ImageListEditor.jsx` (per-image preview, add, remove) instead of the earlier single comma-separated text field.
+
 ---
 
 # 🌐 Public API
@@ -252,7 +266,10 @@ GET /api/v1/public/projects
 GET /api/v1/public/social-links
 GET /api/v1/public/footer
 GET /api/v1/public/blogs        (?limit=N supported)
+GET /api/v1/public/projects/:slug
 ```
+
+The single-project endpoint powers `/projects/:slug` (Phase 7). It looks up the project by its `slug` field (not its MongoDB `_id`) and returns `404` for both a nonexistent slug and a real-but-hidden (`isVisible: false`) project - the response is identical either way, so a visitor can't tell a hidden project exists.
 
 These routes are unauthenticated by design, but each is scoped server-side to what is safe to show: collection resources are filtered to `isVisible: true`, and blog posts are additionally filtered to `status: "published"`. They reuse the same Mongoose models and controllers/services as the admin routes (via `listPublic`/`getPublic` helpers on the shared service factories) rather than a separate API layer.
 
@@ -316,26 +333,31 @@ components/admin/
 ├── Sidebar
 ├── Topbar
 ├── StatCard
-└── CmsPlaceholder
+├── CmsPlaceholder
+└── ImageListEditor    (repeatable image-URL editor with preview, used by the Projects gallery field)
 ```
 
 The public portfolio has its own component tree, built from the same `components/ui/` primitives:
 
 ```text
 components/public/
-├── PublicHeader       (nav, mobile drawer)
+├── PublicHeader       (nav, mobile drawer, route-aware anchor links)
 ├── HeroSection
 ├── AboutSection
 ├── SkillsSection
 ├── ExperienceSection
 ├── ServicesSection
 ├── ProjectsSection
+├── ProjectGallery     (responsive image grid, used on the project detail page)
+├── ImageLightbox      (keyboard/Escape-accessible fullscreen image preview)
 ├── ContactSection
 ├── BlogSection
 ├── PublicFooter
 ├── Reveal             (shared entrance animation)
 └── SectionShell       (shared section container/heading)
 ```
+
+`pages/public/ProjectDetail.jsx` (`/projects/:slug`) uses `ProjectGallery` and `ImageLightbox` together, and reuses `ProjectsSection`'s `ProjectCard` for its "More Projects" section rather than duplicating card markup.
 
 Image rendering (`SafeImage`, with graceful fallback for missing/broken URLs) lives in `components/ui/` since both the admin previews (Site Settings logo/favicon) and the public sections use it.
 

@@ -1,6 +1,7 @@
 import { Routes, Route } from "react-router-dom";
 import ProtectedRoute from "./ProtectedRoute.jsx";
 import Home from "../pages/public/Home.jsx";
+import ProjectDetail from "../pages/public/ProjectDetail.jsx";
 import AdminLogin from "../pages/admin/AdminLogin.jsx";
 import AdminLayout from "../layouts/AdminLayout.jsx";
 import Dashboard from "../pages/admin/Dashboard.jsx";
@@ -21,6 +22,7 @@ const AppRoutes = () => {
   return (
     <Routes>
       <Route path="/" element={<Home />} />
+      <Route path="/projects/:slug" element={<ProjectDetail />} />
       <Route path="/admin/login" element={<AdminLogin />} />
       <Route
         path="/admin"

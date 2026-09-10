@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { Link } from "react-router-dom";
 import { AnimatePresence, motion } from "framer-motion";
 import { Menu, X } from "lucide-react";
 import Button from "../ui/Button.jsx";
@@ -11,6 +12,29 @@ const DEFAULT_NAV = [
   { label: "Projects", href: "#projects" },
   { label: "Contact", href: "#contact" },
 ];
+
+const isAnchor = (href) => typeof href === "string" && href.startsWith("#");
+
+// A CMS-configured href might be an in-page anchor ("#projects") or a
+// full external URL. Anchors need to route through "/" first when the
+// visitor isn't already on the homepage (e.g. a project detail page),
+// so they render as a router Link to "/#section" instead of a bare <a
+// href="#section">, which would silently do nothing on any other route.
+const NavLink = ({ href, className, onClick, children }) => {
+  if (isAnchor(href)) {
+    return (
+      <Link to={`/${href}`} className={className} onClick={onClick}>
+        {children}
+      </Link>
+    );
+  }
+
+  return (
+    <a href={href} className={className} onClick={onClick}>
+      {children}
+    </a>
+  );
+};
 
 const PublicHeader = ({ header, siteSettings }) => {
   const [isOpen, setIsOpen] = useState(false);
@@ -42,28 +66,33 @@ const PublicHeader = ({ header, siteSettings }) => {
   return (
     <header className="sticky top-0 z-40 border-b border-slate-800/80 bg-slate-950/80 backdrop-blur-md">
       <div className="mx-auto flex h-16 w-full max-w-6xl items-center justify-between px-4 sm:px-6 lg:px-8">
-        <a href="#top" className="text-lg font-bold tracking-tight text-slate-50">
+        <Link to="/" className="text-lg font-bold tracking-tight text-slate-50">
           {logo ? <SafeImage src={logo} alt={brand} className="h-8 w-auto" /> : brand}
-        </a>
+        </Link>
 
         <nav className="hidden items-center gap-8 md:flex" aria-label="Primary">
           {navItems.map((item) => (
-            <a
+            <NavLink
               key={item.href + item.label}
               href={item.href}
               className="text-sm font-medium text-slate-300 transition hover:text-white"
             >
               {item.label}
-            </a>
+            </NavLink>
           ))}
         </nav>
 
         <div className="hidden md:block">
-          {cta && (
-            <Button as="a" href={cta.href} size="sm">
-              {cta.label}
-            </Button>
-          )}
+          {cta &&
+            (isAnchor(cta.href) ? (
+              <Button as={Link} to={`/${cta.href}`} size="sm">
+                {cta.label}
+              </Button>
+            ) : (
+              <Button as="a" href={cta.href} size="sm">
+                {cta.label}
+              </Button>
+            ))}
         </div>
 
         <button
@@ -91,20 +120,25 @@ const PublicHeader = ({ header, siteSettings }) => {
           >
             <div className="flex flex-col gap-1 px-4 py-4 sm:px-6">
               {navItems.map((item) => (
-                <a
+                <NavLink
                   key={item.href + item.label}
                   href={item.href}
                   onClick={handleNavClick}
                   className="rounded-lg px-3 py-2.5 text-base font-medium text-slate-200 hover:bg-slate-900"
                 >
                   {item.label}
-                </a>
+                </NavLink>
               ))}
-              {cta && (
-                <Button as="a" href={cta.href} className="mt-2" onClick={handleNavClick}>
-                  {cta.label}
-                </Button>
-              )}
+              {cta &&
+                (isAnchor(cta.href) ? (
+                  <Button as={Link} to={`/${cta.href}`} className="mt-2" onClick={handleNavClick}>
+                    {cta.label}
+                  </Button>
+                ) : (
+                  <Button as="a" href={cta.href} className="mt-2" onClick={handleNavClick}>
+                    {cta.label}
+                  </Button>
+                ))}
             </div>
           </motion.nav>
         )}

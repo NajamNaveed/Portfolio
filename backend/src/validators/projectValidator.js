@@ -40,8 +40,16 @@ const validatePayload = (body, isUpdate) => {
     errors.push("Live URL must be a valid URL.");
   }
 
-  if (body.images !== undefined && !Array.isArray(body.images)) {
-    errors.push("Images must be an array.");
+  if (body.coverImage !== undefined && body.coverImage !== "" && !isValidUrl(body.coverImage)) {
+    errors.push("Cover image must be a valid URL.");
+  }
+
+  if (body.images !== undefined) {
+    if (!Array.isArray(body.images)) {
+      errors.push("Images must be an array.");
+    } else if (body.images.some((url) => typeof url !== "string" || !url.trim() || !isValidUrl(url))) {
+      errors.push("Each image must be a valid URL.");
+    }
   }
 
   if (body.technologies !== undefined && !Array.isArray(body.technologies)) {
