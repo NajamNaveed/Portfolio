@@ -4,9 +4,10 @@ import pick from "../utils/pick.js";
 
 const ALLOWED_FIELDS = ["logo", "navigationItems", "cta", "isVisible"];
 
-const { getSingleton, upsertSingleton } = createSingletonService(Header);
+const { getSingleton, upsertSingleton, getPublic } = createSingletonService(Header);
 
 export const getHeader = () => getSingleton();
 export const updateHeader = (data) => upsertSingleton(pick(data, ALLOWED_FIELDS));
+export const getHeaderPublic = () => getPublic();
 
-export default { getHeader, updateHeader };
+export default { getHeader, updateHeader, getHeaderPublic };

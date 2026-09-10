@@ -25,7 +25,7 @@ The application contains:
 * Loading and error states
 * CRUD operations for portfolio resources
 
-The project is being developed incrementally in phases, with the current codebase containing the Admin Dashboard Foundation and Phase 4B CMS functionality.
+The project is being developed incrementally in phases. The current codebase includes the Admin Dashboard Foundation, Phase 4B CMS CRUD functionality, the Phase 5 CMS-driven public portfolio, and Phase 6 production-hardening fixes (Site Settings → public sync, request-loop audit, security review).
 
 ---
 
@@ -236,6 +236,40 @@ The exact API contract should always be verified against the current backend imp
 
 ---
 
+# 🌐 Public API
+
+The public portfolio (`/`) does not authenticate, so it cannot use the admin CMS endpoints above. Instead, each resource that needs to be publicly visible exposes a read-only counterpart under:
+
+```text
+GET /api/v1/public/site-settings
+GET /api/v1/public/header
+GET /api/v1/public/hero
+GET /api/v1/public/about
+GET /api/v1/public/skills
+GET /api/v1/public/experience
+GET /api/v1/public/services
+GET /api/v1/public/projects
+GET /api/v1/public/social-links
+GET /api/v1/public/footer
+GET /api/v1/public/blogs        (?limit=N supported)
+```
+
+These routes are unauthenticated by design, but each is scoped server-side to what is safe to show: collection resources are filtered to `isVisible: true`, and blog posts are additionally filtered to `status: "published"`. They reuse the same Mongoose models and controllers/services as the admin routes (via `listPublic`/`getPublic` helpers on the shared service factories) rather than a separate API layer.
+
+## Site Settings field usage
+
+| Field | Public usage |
+|---|---|
+| `siteName` | Header/footer brand text |
+| `siteTitle` | Browser tab title (fallback when no SEO title is set) |
+| `siteDescription` | Meta description (fallback when no SEO description is set) |
+| `logo` | Public header logo (used when the Header CMS resource has no logo of its own) |
+| `favicon` | Browser tab icon, applied dynamically via `useDocumentHead` |
+| `defaultSeoTitle` / `defaultSeoDescription` | Take priority over `siteTitle`/`siteDescription` for `<title>`/meta description |
+| `email` / `phone` / `location` | Shown in the public Contact section when set |
+
+---
+
 # 📊 Admin Dashboard
 
 The dashboard provides an overview of CMS content.
@@ -284,6 +318,26 @@ components/admin/
 ├── StatCard
 └── CmsPlaceholder
 ```
+
+The public portfolio has its own component tree, built from the same `components/ui/` primitives:
+
+```text
+components/public/
+├── PublicHeader       (nav, mobile drawer)
+├── HeroSection
+├── AboutSection
+├── SkillsSection
+├── ExperienceSection
+├── ServicesSection
+├── ProjectsSection
+├── ContactSection
+├── BlogSection
+├── PublicFooter
+├── Reveal             (shared entrance animation)
+└── SectionShell       (shared section container/heading)
+```
+
+Image rendering (`SafeImage`, with graceful fallback for missing/broken URLs) lives in `components/ui/` since both the admin previews (Site Settings logo/favicon) and the public sections use it.
 
 The purpose of this separation is to make future CMS forms consistent and easier to maintain.
 

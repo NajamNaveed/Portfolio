@@ -13,9 +13,10 @@ const ALLOWED_FIELDS = [
   "isVisible",
 ];
 
-const { getSingleton, upsertSingleton } = createSingletonService(Hero);
+const { getSingleton, upsertSingleton, getPublic } = createSingletonService(Hero);
 
 export const getHero = () => getSingleton();
 export const updateHero = (data) => upsertSingleton(pick(data, ALLOWED_FIELDS));
+export const getHeroPublic = () => getPublic();
 
-export default { getHero, updateHero };
+export default { getHero, updateHero, getHeroPublic };

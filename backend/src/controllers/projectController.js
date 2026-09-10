@@ -45,3 +45,12 @@ export const deleteProject = asyncHandler(async (req, res) => {
     message: "Project deleted successfully.",
   });
 });
+
+export const listProjectsPublic = asyncHandler(async (req, res) => {
+  const items = await projectService.listPublic();
+  res.status(200).json({
+    success: true,
+    message: "Projects fetched successfully.",
+    data: items,
+  });
+});

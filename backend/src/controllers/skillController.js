@@ -45,3 +45,12 @@ export const deleteSkill = asyncHandler(async (req, res) => {
     message: "Skill deleted successfully.",
   });
 });
+
+export const listSkillsPublic = asyncHandler(async (req, res) => {
+  const items = await skillService.listPublic();
+  res.status(200).json({
+    success: true,
+    message: "Skills fetched successfully.",
+    data: items,
+  });
+});

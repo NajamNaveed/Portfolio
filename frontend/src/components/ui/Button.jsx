@@ -18,17 +18,21 @@ const SIZES = {
 
 const Button = forwardRef(
   (
-    { variant = "primary", size = "md", className = "", isLoading = false, disabled, children, ...props },
+    { as: Component = "button", variant = "primary", size = "md", className = "", isLoading = false, disabled, children, ...props },
     ref
   ) => {
+    const isNativeButton = Component === "button";
+    const isDisabled = disabled || isLoading;
+
     return (
-      <button
+      <Component
         ref={ref}
-        disabled={disabled || isLoading}
+        {...(isNativeButton ? { disabled: isDisabled } : { "aria-disabled": isDisabled || undefined })}
         className={cn(
           "inline-flex items-center justify-center gap-2 rounded-lg font-medium transition duration-150 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-offset-slate-950 disabled:cursor-not-allowed disabled:opacity-60",
           VARIANTS[variant],
           SIZES[size],
+          isDisabled && !isNativeButton && "pointer-events-none opacity-60",
           className
         )}
         {...props}
@@ -37,7 +41,7 @@ const Button = forwardRef(
           <span className="h-3.5 w-3.5 animate-spin rounded-full border-2 border-current border-t-transparent motion-reduce:animate-none" />
         )}
         {children}
-      </button>
+      </Component>
     );
   }
 );

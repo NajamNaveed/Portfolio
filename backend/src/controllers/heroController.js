@@ -1,5 +1,5 @@
 import asyncHandler from "../utils/asyncHandler.js";
-import { getHero, updateHero } from "../services/heroService.js";
+import { getHero, updateHero, getHeroPublic } from "../services/heroService.js";
 
 export const getHeroInfo = asyncHandler(async (req, res) => {
   const hero = await getHero();
@@ -15,6 +15,15 @@ export const updateHeroInfo = asyncHandler(async (req, res) => {
   res.status(200).json({
     success: true,
     message: "Hero updated successfully.",
+    data: hero,
+  });
+});
+
+export const getPublicHero = asyncHandler(async (req, res) => {
+  const hero = await getHeroPublic();
+  res.status(200).json({
+    success: true,
+    message: "Hero fetched successfully.",
     data: hero,
   });
 });

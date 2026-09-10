@@ -11,6 +11,7 @@ import projectRoutes from "./projectRoutes.js";
 import socialLinkRoutes from "./socialLinkRoutes.js";
 import footerRoutes from "./footerRoutes.js";
 import blogRoutes from "./blogRoutes.js";
+import publicRoutes from "./publicRoutes.js";
 
 const router = Router();
 
@@ -30,5 +31,6 @@ router.use("/projects", projectRoutes);
 router.use("/social-links", socialLinkRoutes);
 router.use("/footer", footerRoutes);
 router.use("/blogs", blogRoutes);
+router.use("/public", publicRoutes);
 
 export default router;

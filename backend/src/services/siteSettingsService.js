@@ -15,9 +15,10 @@ const ALLOWED_FIELDS = [
   "defaultSeoDescription",
 ];
 
-const { getSingleton, upsertSingleton } = createSingletonService(SiteSettings);
+const { getSingleton, upsertSingleton, getPublic } = createSingletonService(SiteSettings);
 
 export const getSiteSettings = () => getSingleton();
 export const updateSiteSettings = (data) => upsertSingleton(pick(data, ALLOWED_FIELDS));
+export const getSiteSettingsPublic = () => getPublic();
 
-export default { getSiteSettings, updateSiteSettings };
+export default { getSiteSettings, updateSiteSettings, getSiteSettingsPublic };

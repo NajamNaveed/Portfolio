@@ -1,5 +1,5 @@
 import asyncHandler from "../utils/asyncHandler.js";
-import { getHeader, updateHeader } from "../services/headerService.js";
+import { getHeader, updateHeader, getHeaderPublic } from "../services/headerService.js";
 
 export const getHeaderInfo = asyncHandler(async (req, res) => {
   const header = await getHeader();
@@ -15,6 +15,15 @@ export const updateHeaderInfo = asyncHandler(async (req, res) => {
   res.status(200).json({
     success: true,
     message: "Header updated successfully.",
+    data: header,
+  });
+});
+
+export const getPublicHeader = asyncHandler(async (req, res) => {
+  const header = await getHeaderPublic();
+  res.status(200).json({
+    success: true,
+    message: "Header fetched successfully.",
     data: header,
   });
 });

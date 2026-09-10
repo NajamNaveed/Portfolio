@@ -70,7 +70,23 @@ const createCrudService = (Model, allowedFields, options = {}) => {
     return doc;
   };
 
-  return { list, getById, create, update, remove };
+  // Public, read-only accessor for the visitor-facing portfolio.
+  // Always scoped to isVisible: true and never paginated - these are
+  // small, admin-curated collections, so a plain sorted list is enough.
+  const listPublic = async (extraFilter = {}, publicOptions = {}) => {
+    const filter = { isVisible: true, ...extraFilter };
+    const sort = publicOptions.sort || defaultSort;
+
+    let cursor = Model.find(filter).sort(sort);
+
+    if (publicOptions.limit) {
+      cursor = cursor.limit(publicOptions.limit);
+    }
+
+    return cursor;
+  };
+
+  return { list, getById, create, update, remove, listPublic };
 };
 
 export default createCrudService;

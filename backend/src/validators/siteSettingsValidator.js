@@ -1,4 +1,5 @@
 import ApiError from "../utils/ApiError.js";
+import isValidUrl from "../utils/isValidUrl.js";
 
 const STRING_FIELDS_MAX = {
   siteName: 120,
@@ -13,6 +14,8 @@ const STRING_FIELDS_MAX = {
   defaultSeoDescription: 300,
 };
 
+const URL_FIELDS = ["logo", "favicon"];
+
 export const validateSiteSettings = (req, res, next) => {
   const errors = [];
   const body = req.body;
@@ -24,6 +27,12 @@ export const validateSiteSettings = (req, res, next) => {
       } else if (body[field].length > maxLength) {
         errors.push(`${field} must be under ${maxLength} characters.`);
       }
+    }
+  });
+
+  URL_FIELDS.forEach((field) => {
+    if (body[field] !== undefined && body[field] !== "" && !isValidUrl(body[field])) {
+      errors.push(`${field} must be a valid URL.`);
     }
   });
 

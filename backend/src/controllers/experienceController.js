@@ -45,3 +45,12 @@ export const deleteExperience = asyncHandler(async (req, res) => {
     message: "Experience entry deleted successfully.",
   });
 });
+
+export const listExperiencePublic = asyncHandler(async (req, res) => {
+  const items = await experienceService.listPublic();
+  res.status(200).json({
+    success: true,
+    message: "Experience entries fetched successfully.",
+    data: items,
+  });
+});

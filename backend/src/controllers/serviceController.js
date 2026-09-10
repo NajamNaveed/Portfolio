@@ -45,3 +45,12 @@ export const deleteService = asyncHandler(async (req, res) => {
     message: "Service deleted successfully.",
   });
 });
+
+export const listServicesPublic = asyncHandler(async (req, res) => {
+  const items = await serviceService.listPublic();
+  res.status(200).json({
+    success: true,
+    message: "Services fetched successfully.",
+    data: items,
+  });
+});

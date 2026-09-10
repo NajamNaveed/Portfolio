@@ -4,9 +4,10 @@ import pick from "../utils/pick.js";
 
 const ALLOWED_FIELDS = ["description", "copyrightText", "columns", "socialLinks", "isVisible"];
 
-const { getSingleton, upsertSingleton } = createSingletonService(Footer);
+const { getSingleton, upsertSingleton, getPublic } = createSingletonService(Footer);
 
 export const getFooter = () => getSingleton();
 export const updateFooter = (data) => upsertSingleton(pick(data, ALLOWED_FIELDS));
+export const getFooterPublic = () => getPublic();
 
-export default { getFooter, updateFooter };
+export default { getFooter, updateFooter, getFooterPublic };

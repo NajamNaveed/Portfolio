@@ -45,3 +45,19 @@ export const deleteBlog = asyncHandler(async (req, res) => {
     message: "Blog post deleted successfully.",
   });
 });
+
+export const listBlogsPublic = asyncHandler(async (req, res) => {
+  const parsedLimit = parseInt(req.query.limit, 10);
+  const limit = Number.isFinite(parsedLimit) ? Math.min(Math.max(parsedLimit, 1), 20) : undefined;
+
+  const items = await blogService.listPublic(
+    { status: "published" },
+    { sort: "-publishedAt -createdAt", limit }
+  );
+
+  res.status(200).json({
+    success: true,
+    message: "Blog posts fetched successfully.",
+    data: items,
+  });
+});

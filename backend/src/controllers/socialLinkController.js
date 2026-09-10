@@ -45,3 +45,12 @@ export const deleteSocialLink = asyncHandler(async (req, res) => {
     message: "Social link deleted successfully.",
   });
 });
+
+export const listSocialLinksPublic = asyncHandler(async (req, res) => {
+  const items = await socialLinkService.listPublic();
+  res.status(200).json({
+    success: true,
+    message: "Social links fetched successfully.",
+    data: items,
+  });
+});
