@@ -4,6 +4,7 @@ import Input from "../../components/ui/Input.jsx";
 import Textarea from "../../components/ui/Textarea.jsx";
 import Switch from "../../components/ui/Switch.jsx";
 import Skeleton from "../../components/ui/Skeleton.jsx";
+import Button from "../../components/ui/Button.jsx";
 import FormActions from "../../components/admin/FormActions.jsx";
 import useSingletonForm from "../../hooks/useSingletonForm.js";
 import { getHero, updateHero } from "../../services/cms/heroService.js";
@@ -20,7 +21,7 @@ const EMPTY_FORM = {
 };
 
 const HeroPage = () => {
-  const { form, setForm, isLoading, isSaving, loadError, formErrors, save } = useSingletonForm(
+  const { form, setForm, isLoading, isSaving, loadError, formErrors, save, reload } = useSingletonForm(
   getHero,
   updateHero,
   { resourceLabel: "Hero", emptyForm: EMPTY_FORM }
@@ -57,7 +58,10 @@ const HeroPage = () => {
     return (
       <div>
         <PageHeader title="Hero" description="The first thing visitors see." />
-        <Card className="border-red-900/50 bg-red-950/30 p-6 text-sm text-red-300">{loadError}</Card>
+        <Card className="border-red-900/50 bg-red-950/30 p-6 text-sm text-red-300">
+          <p>{loadError}</p>
+          <Button className="mt-4" variant="outline" onClick={reload}>Try again</Button>
+        </Card>
       </div>
     );
   }

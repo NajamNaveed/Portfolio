@@ -42,6 +42,23 @@ export const AuthProvider = ({ children }) => {
     };
   }, []);
 
+  useEffect(() => {
+    if (!admin) return undefined;
+
+    const logoutOnPageUnload = () => {
+      const logoutUrl = `${import.meta.env.VITE_API_BASE_URL}/auth/logout`;
+      fetch(logoutUrl, {
+        method: "POST",
+        credentials: "include",
+        keepalive: true,
+        headers: { "Content-Type": "application/json" },
+      }).catch(() => undefined);
+    };
+
+    window.addEventListener("pagehide", logoutOnPageUnload);
+    return () => window.removeEventListener("pagehide", logoutOnPageUnload);
+  }, [admin]);
+
   const login = useCallback(async (email, password) => {
     const loggedInAdmin = await authService.login(email, password);
     setAdmin(loggedInAdmin);

@@ -19,7 +19,7 @@ const EMPTY_FORM = {
 const emptyNavItem = () => ({ label: "", href: "", order: 0, isVisible: true });
 
 const HeaderPage = () => {
-  const { form, setForm, isLoading, isSaving, loadError, formErrors, save } = useSingletonForm(
+  const { form, setForm, isLoading, isSaving, loadError, formErrors, save, reload } = useSingletonForm(
   getHeader,
   updateHeader,
   { resourceLabel: "Header", emptyForm: EMPTY_FORM }
@@ -70,7 +70,10 @@ const HeaderPage = () => {
     return (
       <div>
         <PageHeader title="Header" description="Site navigation and call-to-action." />
-        <Card className="border-red-900/50 bg-red-950/30 p-6 text-sm text-red-300">{loadError}</Card>
+        <Card className="border-red-900/50 bg-red-950/30 p-6 text-sm text-red-300">
+          <p>{loadError}</p>
+          <Button className="mt-4" variant="outline" onClick={reload}>Try again</Button>
+        </Card>
       </div>
     );
   }

@@ -4,6 +4,7 @@ import Input from "../../components/ui/Input.jsx";
 import Textarea from "../../components/ui/Textarea.jsx";
 import Skeleton from "../../components/ui/Skeleton.jsx";
 import SafeImage from "../../components/ui/SafeImage.jsx";
+import Button from "../../components/ui/Button.jsx";
 import FormActions from "../../components/admin/FormActions.jsx";
 import useSingletonForm from "../../hooks/useSingletonForm.js";
 import { getSiteSettings, updateSiteSettings } from "../../services/cms/siteSettingsService.js";
@@ -22,7 +23,7 @@ const EMPTY_FORM = {
 };
 
 const SiteSettings = () => {
-  const { form, setForm, isLoading, isSaving, loadError, formErrors, save } = useSingletonForm(
+  const { form, setForm, isLoading, isSaving, loadError, formErrors, save, reload } = useSingletonForm(
   getSiteSettings,
   updateSiteSettings,
   { resourceLabel: "SiteSettings", emptyForm: EMPTY_FORM }
@@ -54,7 +55,10 @@ const SiteSettings = () => {
     return (
       <div>
         <PageHeader title="Site Settings" description="Global configuration for your portfolio." />
-        <Card className="border-red-900/50 bg-red-950/30 p-6 text-sm text-red-300">{loadError}</Card>
+        <Card className="border-red-900/50 bg-red-950/30 p-6 text-sm text-red-300">
+          <p>{loadError}</p>
+          <Button className="mt-4" variant="outline" onClick={reload}>Try again</Button>
+        </Card>
       </div>
     );
   }

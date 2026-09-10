@@ -15,6 +15,8 @@ const env = {
   adminPassword: process.env.ADMIN_PASSWORD || "",
   aiApiKey: process.env.AI_API_KEY || "",
   aiApiProvider: process.env.AI_API_PROVIDER || "",
+  jwtIssuer: process.env.JWT_ISSUER || "portfolio-api",
+  jwtAudience: process.env.JWT_AUDIENCE || "portfolio-admin",
 };
 
 if (env.nodeEnv === "production") {
@@ -30,6 +32,10 @@ if (env.nodeEnv === "production") {
     throw new Error(
       `Missing required environment variables in production: ${missing.join(", ")}`
     );
+  }
+
+  if (env.jwtSecret.length < 32) {
+    throw new Error("JWT_SECRET must be at least 32 characters in production.");
   }
 }
 

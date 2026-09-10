@@ -24,7 +24,7 @@ const emptyColumn = () => ({ title: "", links: [], order: 0 });
 const emptyLink = () => ({ label: "", href: "", order: 0 });
 
 const FooterPage = () => {
-  const { form, setForm, isLoading, isSaving, loadError, formErrors, save } = useSingletonForm(
+  const { form, setForm, isLoading, isSaving, loadError, formErrors, save, reload } = useSingletonForm(
   getFooter,
   updateFooter,
   { resourceLabel: "Footer", emptyForm: EMPTY_FORM }
@@ -119,7 +119,10 @@ const FooterPage = () => {
     return (
       <div>
         <PageHeader title="Footer" description="Footer content and links." />
-        <Card className="border-red-900/50 bg-red-950/30 p-6 text-sm text-red-300">{loadError}</Card>
+        <Card className="border-red-900/50 bg-red-950/30 p-6 text-sm text-red-300">
+          <p>{loadError}</p>
+          <Button className="mt-4" variant="outline" onClick={reload}>Try again</Button>
+        </Card>
       </div>
     );
   }

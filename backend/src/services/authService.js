@@ -13,6 +13,9 @@ const toSafeAdmin = (admin) => ({
 const generateToken = (adminId) => {
   return jwt.sign({ adminId }, env.jwtSecret, {
     expiresIn: env.jwtExpiresIn,
+    algorithm: "HS256",
+    issuer: env.jwtIssuer,
+    audience: env.jwtAudience,
   });
 };
 
@@ -38,7 +41,11 @@ export const loginAdmin = async (email, password) => {
 
 export const verifyToken = (token) => {
   try {
-    return jwt.verify(token, env.jwtSecret);
+    return jwt.verify(token, env.jwtSecret, {
+      algorithms: ["HS256"],
+      issuer: env.jwtIssuer,
+      audience: env.jwtAudience,
+    });
   } catch (error) {
     throw new ApiError(401, "Not authenticated.");
   }

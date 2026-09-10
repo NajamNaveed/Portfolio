@@ -54,7 +54,7 @@ const useSingletonForm = (getOne, update, { resourceLabel, emptyForm }) => {
     }
   };
 
-  return { form, setForm, isLoading, isSaving, loadError, formErrors, save };
+  return { form, setForm, isLoading, isSaving, loadError, formErrors, save, reload: load };
 };
 
 export default useSingletonForm;

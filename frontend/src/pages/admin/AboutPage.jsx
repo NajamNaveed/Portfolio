@@ -21,7 +21,7 @@ const EMPTY_FORM = {
 };
 
 const AboutPage = () => {
-  const { form, setForm, isLoading, isSaving, loadError, formErrors, save } = useSingletonForm(
+  const { form, setForm, isLoading, isSaving, loadError, formErrors, save, reload } = useSingletonForm(
   getAbout,
   updateAbout,
   { resourceLabel: "About", emptyForm: EMPTY_FORM }
@@ -85,7 +85,10 @@ const AboutPage = () => {
     return (
       <div>
         <PageHeader title="About" description="Tell visitors about yourself." />
-        <Card className="border-red-900/50 bg-red-950/30 p-6 text-sm text-red-300">{loadError}</Card>
+        <Card className="border-red-900/50 bg-red-950/30 p-6 text-sm text-red-300">
+          <p>{loadError}</p>
+          <Button className="mt-4" variant="outline" onClick={reload}>Try again</Button>
+        </Card>
       </div>
     );
   }
